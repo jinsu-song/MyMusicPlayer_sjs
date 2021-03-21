@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyMusicPlayer_sjs</string>
+    <string name="str_all_music">모든 뮤직</string>
+    <string name="str_like_music">나만의 뮤직</string>
+</resources>
