@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import java.io.IOException;
@@ -29,7 +28,8 @@ import java.util.ArrayList;
 public class FragmentPlayer extends Fragment implements View.OnClickListener{
     private MusicListActivity musicListActivity;
 
-    private ImageView imgAlbumArt,imgPrevious,imgPauseAndPlay,imgForward,imgLike;
+    private ImageView imgAlbumArt;
+    private ImageButton ibPrevious, ibPauseAndPlay, ibForward, ibLike;
     private TextView tvMusicName, tvSingerName, tvStartTime, tvDuration;
     private SeekBar seekBarMP3;
     private MediaPlayer mediaPlayer = new MediaPlayer();
@@ -38,6 +38,7 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
     private MusicData musicData = new MusicData();
     private ArrayList<MusicData> allMusicSdCardList = null;
     private ArrayList<MusicData> likeMusicList = null;
+    private ArrayList<MusicData> musicList;
     private MusicAdapter musicAdapter;
     private SimpleDateFormat sdf = new SimpleDateFormat("mm:ss"); // 1. 시간을 가져오기 방식
 
@@ -58,22 +59,16 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         musicListActivity = (MusicListActivity) getActivity();
-        allMusicSdCardList = musicListActivity.getAllMusicSdCardList();
+
+        musicList = musicListActivity.getMusicList();
         likeMusicList = musicListActivity.getLikeMusicList();
-        musicAdapter = musicListActivity.getLikeMusicAdapter();
-//        allMusicAdapter = musicListActivity.getAllMusicAdapter();
-
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener)context;
-//        }else{
-//            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
-//        }
-
+        musicAdapter = musicListActivity.getMusicAdapter();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+
 //        mListener.onFragmentInteraction(mediaPlayer);
 
 
@@ -101,67 +96,60 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         setPlayerData(index,true);
         seekBarChangeMethod();
 
-
-
-//        eventHandler(view);
         return view;
     }   // end of onCrateView
 
-    private void eventHandler(View view) {
-
-    }   // end of eventHandler
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.imgPauseAndPlay:
+            case R.id.ibPauseAndPlay:
                 if (mediaPlayer.isPlaying()){
                     mediaPlayer.pause();
-                    imgPauseAndPlay.setImageResource(R.drawable.button_play);
+                    ibPauseAndPlay.setImageResource(R.drawable.button_play);
                 }else{
 //                    mediaPlayer.prepare();
                     mediaPlayer.start();
-                    imgPauseAndPlay.setImageResource(R.drawable.button_pause);
-//                    mListener.onFragmentInteraction(mediaPlayer);
-                    try{
-//                        thread.interrupt();
-                        thread.sleep(100);
-                    }catch (InterruptedException ite){
-
-                    }
+                    ibPauseAndPlay.setImageResource(R.drawable.button_pause);
+//                    try{
+////                        thread.interrupt();
+//                        thread.sleep(100);
+//                    }catch (InterruptedException ite){
+//
+//                    }
                     setSeekBarThread();
                 }
                 break;
-            case R.id.imgPrevious:
+            case R.id.ibPrevious:
                 mediaPlayer.stop();
                 mediaPlayer.reset();
                 if (index == 0){
-                    index = musicListActivity.getAllMusicSdCardList().size();
+                    index = musicListActivity.getMusicList().size();
                 }
                 index--;
                 setPlayerData(index,true);
                 break;
-            case R.id.imgForward:
+            case R.id.ibForward:
                 mediaPlayer.stop();
                 mediaPlayer.reset();
-                if (index == allMusicSdCardList.size() - 1){
+                if (index == musicList.size() - 1){
                     index = -1;
                 }
                 index++;
                 setPlayerData(index,true);
                 break;
-            case R.id.imgLike:
-                if (imgLike.isActivated()){
-                    imgLike.setActivated(false);
-                    imgLike.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+            case R.id.ibLike:
+                if (ibLike.isActivated()){
+                    ibLike.setActivated(false);
+                    ibLike.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                     musicData.setLiked(0);
                     likeMusicList.remove(musicData);
                     musicAdapter.notifyDataSetChanged();;
                     Toast.makeText(musicListActivity, "좋아요 취소!!", Toast.LENGTH_SHORT).show();
                 }else{
-                    imgLike.setActivated(true);
+                    ibLike.setActivated(true);
                     musicData.setLiked(1);
-                    imgLike.setImageResource(R.drawable.ic_baseline_favorite_24);
+                    ibLike.setImageResource(R.drawable.ic_baseline_favorite_24);
                     likeMusicList.add(musicData);
                     musicAdapter.notifyDataSetChanged();
                     Toast.makeText(musicListActivity, "좋아요 !!", Toast.LENGTH_SHORT).show();
@@ -180,11 +168,13 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         mediaPlayer.stop();
         mediaPlayer.reset();
 
-        MusicAdapter musicAdapter = new MusicAdapter(musicListActivity);
+//        MusicAdapter musicAdapter = new MusicAdapter(musicListActivity);
 
         // 플래그에 따라 musicData에 좋아요한 뮤직 리스트와 아닌 리스트를 가져온다.
         if (flag){
-            musicData = musicListActivity.getAllMusicSdCardList().get(pos);
+//            musicData = musicListActivity.getAllMusicSdCardList().get(pos);
+//            musicData = musicListActivity.getMusicList().get(pos);
+            musicData = musicList.get(pos);
         }else{
             // 좋아요한 뮤직 리스트 가져오기
 //            musicData = musicListActivity.getAllMusicSdCardList().get(pos);
@@ -195,9 +185,11 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         tvDuration.setText(sdf.format(Integer.parseInt(musicData.getDuration())));
 
         if (musicData.getLiked() == 1){
-            imgLike.setActivated(true);
+            ibLike.setActivated(true);
+            ibLike.setImageResource(R.drawable.ic_baseline_favorite_24);
         }else{
-            imgLike.setActivated(false);
+            ibLike.setActivated(false);
+            ibLike.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
         Bitmap albumImg = musicAdapter.getAlbumImg(musicListActivity,Long.parseLong(musicData.getAlbumArt()), 200);
@@ -216,15 +208,15 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
             mediaPlayer.start();
             seekBarMP3.setProgress(0);
             seekBarMP3.setMax(Integer.parseInt(musicData.getDuration()));
-            imgPauseAndPlay.setActivated(true);
-            imgPauseAndPlay.setImageResource(R.drawable.button_pause);
+            ibPauseAndPlay.setActivated(true);
+            ibPauseAndPlay.setImageResource(R.drawable.button_pause);
 
             setSeekBarThread();
 
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    imgForward.callOnClick();
+                    ibForward.callOnClick();
                 }
             });
         } catch (IOException ioe){
@@ -276,18 +268,18 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         imgAlbumArt = view.findViewById(R.id.imgAlbumArt);
         tvMusicName = view.findViewById(R.id.tvMusicName);
         tvSingerName = view.findViewById(R.id.tvSingerName);
-        imgPrevious = view.findViewById(R.id.imgPrevious);
-        imgPauseAndPlay = view.findViewById(R.id.imgPauseAndPlay);
-        imgForward = view.findViewById(R.id.imgForward);
-        imgLike = view.findViewById(R.id.imgLike);
+        ibPrevious = view.findViewById(R.id.ibPrevious);
+        ibPauseAndPlay = view.findViewById(R.id.ibPauseAndPlay);
+        ibForward = view.findViewById(R.id.ibForward);
+        ibLike = view.findViewById(R.id.ibLike);
         seekBarMP3 = view.findViewById(R.id.seekBarMP3);
         tvStartTime = view.findViewById(R.id.tvStartTime);
         tvDuration = view.findViewById(R.id.tvDuration);
 
-        imgPauseAndPlay.setOnClickListener(this);
-        imgForward.setOnClickListener(this);
-        imgPrevious.setOnClickListener(this);
-        imgLike.setOnClickListener(this);
+        ibPauseAndPlay.setOnClickListener(this);
+        ibForward.setOnClickListener(this);
+        ibPrevious.setOnClickListener(this);
+        ibLike.setOnClickListener(this);
     }   // end of findViewByIdFunc
 
 //    public interface OnFragmentInteractionListener{

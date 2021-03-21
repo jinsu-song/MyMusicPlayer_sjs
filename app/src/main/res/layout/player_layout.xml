@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
+    android:background="@color/beige"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -64,22 +65,30 @@
                 android:layout_weight="6"
                 android:gravity="center"
                 android:paddingLeft="110dp">
-                <ImageView
-                    android:id="@+id/imgPrevious"
+                <ImageButton
+                    android:id="@+id/ibPrevious"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:scaleType="fitXY"
+                    android:background="@color/beige"
                     android:src="@drawable/button_backward"
                     />
-                <ImageView
-                    android:id="@+id/imgPauseAndPlay"
+                <ImageButton
+                    android:id="@+id/ibPauseAndPlay"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:scaleType="fitXY"
+                    android:background="@color/beige"
+
                     android:src="@drawable/button_pause"
                     />
-                <ImageView
-                    android:id="@+id/imgForward"
+                <ImageButton
+                    android:id="@+id/ibForward"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:scaleType="fitXY"
+                    android:background="@color/beige"
+
                     android:src="@drawable/button_forward"
                     />
 
@@ -90,10 +99,13 @@
                 android:orientation="horizontal"
                 android:layout_weight="1"
                 android:gravity="center">
-                <ImageView
-                    android:id="@+id/imgLike"
+                <ImageButton
+                    android:id="@+id/ibLike"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:scaleType="fitXY"
+                    android:background="@color/beige"
+
                     android:layout_marginLeft="15dp"
                     android:src="@drawable/ic_baseline_favorite_border_24"
                     />
