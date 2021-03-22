@@ -16,9 +16,7 @@ import java.util.ArrayList;
 
 public class MusicListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private MusicAdapter allMusicAdapter;
-    private MusicAdapter likeMusicAdapter;
-    private MusicAdapter musicAdapter;
+    private MusicAdapter allMusicAdapter, likeMusicAdapter, musicAdapter;
 
     private int position;
     private int requestCode;
@@ -27,23 +25,18 @@ public class MusicListActivity extends AppCompatActivity {
     private ArrayList<MusicData> allMusicSdCardList = new ArrayList<>();
     private ArrayList<MusicData> likeMusicList = new ArrayList<>();
     private ArrayList<MusicData> musicList = new ArrayList<>();
+
     public MusicAdapter getMusicAdapter(){
         return this.musicAdapter;
     }
-
-
-    public MusicAdapter getLikeMusicAdapter(){
-        return this.likeMusicAdapter;
+    public MusicDBHelper getMusicDBHelper(){
+        return this.musicDBHelper;
     }
 
     public int getPosition(){
         return position;
     }
     public void setPosition(int position){this.position = position;}
-
-    public MusicDBHelper getMusicDBHelper(){
-        return this.musicDBHelper;
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +58,7 @@ public class MusicListActivity extends AppCompatActivity {
         eventHandlerFunc();
     }   // end of onCreate
 
+    // 처음 메인 화면에서 누르는 버튼에 따라 리사이클러 뷰에 저장되는 리스트가 다르게끔 컨트롤함
     public void musicListHandler(int requestCode){
         // 리사이클러뷰 아이디 찾기
         recyclerView = findViewById(R.id.recyclerView);
@@ -102,7 +96,6 @@ public class MusicListActivity extends AppCompatActivity {
     public ArrayList<MusicData> getMusicList(){
         return this.musicList;
     }
-
     public ArrayList<MusicData> getLikeMusicList(){
         likeMusicList = musicDBHelper.saveLikeList();
         if (likeMusicList.isEmpty()){
@@ -120,34 +113,7 @@ public class MusicListActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    public void likeRecyclerViewListUpdate(ArrayList<MusicData> arrayList){
-        likeMusicAdapter.setMusicList(arrayList);
-
-        recyclerView.setAdapter(likeMusicAdapter);
-        likeMusicAdapter.notifyDataSetChanged();
-    }
-
-    private void eventHandlerFunc() {
-        if (musicAdapter == null){
-            Toast.makeText(this, "musicAdapter 널임", Toast.LENGTH_SHORT).show();
-        }
-        musicAdapter.setOnItemClickListener(new MusicAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                allMusicSdCardList = musicDBHelper.selectMusicTbl();
-
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                Fragment fragmentPlayMusic = new FragmentPlayer();
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("allMusicSdCardList", allMusicSdCardList);
-
-                setPosition(position);
-                fragmentTransaction.replace(R.id.frameLayout,fragmentPlayMusic);
-                fragmentTransaction.commit();
-            }
-        });
-    }   // end of eventHandlerFunc
-
+    // Content Provider에서 가져온 정보를 DB에 저장
     private void insertDB(ArrayList<MusicData> arrayList){
 
         boolean returnValue = musicDBHelper.insertMusicDataToDB(arrayList);
@@ -160,6 +126,7 @@ public class MusicListActivity extends AppCompatActivity {
 
     }   // end of insertDB
 
+    // 프레그먼트 핸들링 함수
     private void fragmentSwitcher() {
         Intent getIntent = getIntent();
         int requestCode = getIntent.getIntExtra("requestCode",0);
@@ -180,4 +147,32 @@ public class MusicListActivity extends AppCompatActivity {
 
     }   // end of fragmentSwitcher
 
+    // 이벤트 핸들링 함수
+    private void eventHandlerFunc() {
+        if (musicAdapter == null){
+            Toast.makeText(this, "musicAdapter 널임", Toast.LENGTH_SHORT).show();
+        }
+        musicAdapter.setOnItemClickListener(new MusicAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+//                allMusicSdCardList = musicDBHelper.selectMusicTbl();
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                Fragment fragmentPlayMusic = new FragmentPlayer();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("allMusicSdCardList", allMusicSdCardList);
+
+                setPosition(position);
+                fragmentTransaction.replace(R.id.frameLayout,fragmentPlayMusic);
+                fragmentTransaction.commit();
+            }
+        });
+    }   // end of eventHandlerFunc
+
+    public void likeRecyclerViewListUpdate(ArrayList<MusicData> arrayList){
+        likeMusicAdapter.setMusicList(arrayList);
+
+        recyclerView.setAdapter(likeMusicAdapter);
+        likeMusicAdapter.notifyDataSetChanged();
+    }
 }

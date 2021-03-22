@@ -1,5 +1,4 @@
 package com.example.mymusicplayer_sjs;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -9,7 +8,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import java.util.ArrayList;
-
 public class MusicDBHelper extends SQLiteOpenHelper {
     private Context context;
     private static final String DB_NAME = "musicDB";
@@ -24,6 +22,7 @@ public class MusicDBHelper extends SQLiteOpenHelper {
         this.context = context;
     }
 
+    // 싱글톤 Getter
     public static MusicDBHelper getInstance(Context context){
         if(musicDBHelper == null){
             musicDBHelper = new MusicDBHelper(context);

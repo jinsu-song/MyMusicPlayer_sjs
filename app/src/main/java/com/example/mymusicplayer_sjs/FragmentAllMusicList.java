@@ -25,7 +25,6 @@ public class FragmentAllMusicList extends Fragment {
         recyclerViewAtFragment = view.findViewById(R.id.recyclerViewFragment);
         musicAdapterAtFragment = getArguments().getParcelable("Adapter");
 
-
         // 어댑터와 리사이클러뷰를 연결해줄 매니저를 가져온다.
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 

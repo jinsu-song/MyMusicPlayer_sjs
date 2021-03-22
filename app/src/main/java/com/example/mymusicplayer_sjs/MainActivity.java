@@ -39,11 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
     }   // end of onCreate
 
+    // 아이디 셋팅
     private void findViewByIdFunc() {
         imgAllMusic = findViewById(R.id.imgAllMusic);
         imgLikeMusic = findViewById(R.id.imgLikeMusic);
     }   // end of findViewByIdFunc
 
+    // 이벤트 처리 함수
     private void eventHandlerFunc() {
 
         // 모든 노래 리스트 가져오기
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }   // end of eventHandlerFunc
 
+    // 권한설정 물어보기
     private void requestPermissionsFunc() {
         ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE},MODE_PRIVATE);

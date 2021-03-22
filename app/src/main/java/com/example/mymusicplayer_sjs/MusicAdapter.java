@@ -26,19 +26,20 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
     private Context context;
     private ArrayList<MusicData> musicList;
 
+    // 리스트 포지션 저장할 내부 인터페이스 타입 멤버변수
     private OnItemClickListener mListener = null;
 
+    // 생성자
     private MusicAdapter(){}
-
     public MusicAdapter(Context context) {
         this.context = context;
     }
-
     public MusicAdapter(Context context, ArrayList<MusicData> musicList) {
         this.context = context;
         this.musicList = musicList;
     }
 
+    // recycler_item.xml 을 인플레시션 시킴
     @NonNull
     @Override
     public MusicAdapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -47,6 +48,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
         return viewHolder;
     }
 
+    // recycler_item.xml 에 데이터를 셋팅
     @Override
     public void onBindViewHolder(@NonNull MusicAdapter.CustomViewHolder customViewHolder, int position) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
@@ -63,6 +65,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
         customViewHolder.duration.setText(simpleDateFormat.format(Integer.parseInt(musicList.get(position).getDuration())));
     }   // end of onBindViewHolder
 
+    // 리스트 개수
     @Override
     public int getItemCount() {
         return (musicList != null) ? musicList.size() : 0;
@@ -114,7 +117,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
                     }
                 }
                 return bitmap;
-
 
             }catch (IOException ioe){
                 Log.d("MusicAdapter","content resolver 에러 발생");
@@ -168,10 +170,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.CustomViewHo
         }
     }   // end of CustomViewHolder Class
 
+    // item position을 저장하는 interface
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
     }
 
+    // setter함수
     public void setOnItemClickListener(OnItemClickListener listener){
         this.mListener = listener;
     }

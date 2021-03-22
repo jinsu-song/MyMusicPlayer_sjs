@@ -87,7 +87,6 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         return view;
     }   // end of onCrateView
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -256,6 +255,5 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         ibPrevious.setOnClickListener(this);
         ibLike.setOnClickListener(this);
     }   // end of findViewByIdFunc
-
 }
 
