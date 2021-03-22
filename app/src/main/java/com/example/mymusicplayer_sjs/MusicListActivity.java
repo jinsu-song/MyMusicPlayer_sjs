@@ -56,12 +56,10 @@ public class MusicListActivity extends AppCompatActivity {
         // 음악 리스트 가져오기
         allMusicSdCardList = musicDBHelper.compareArrayList();
 
-
         // 음악 DB에 저장
         insertDB(allMusicSdCardList);
 
         musicListHandler(requestCode);
-
 
         fragmentSwitcher();
         eventHandlerFunc();
@@ -101,11 +99,9 @@ public class MusicListActivity extends AppCompatActivity {
         }
     }   // end of musicListHandler
 
-
     public ArrayList<MusicData> getMusicList(){
         return this.musicList;
     }
-
 
     public ArrayList<MusicData> getLikeMusicList(){
         likeMusicList = musicDBHelper.saveLikeList();
@@ -118,7 +114,6 @@ public class MusicListActivity extends AppCompatActivity {
     }
 
     // 좋아요 리스트 가져오기
-
 
     @Override
     protected void onStop() {
@@ -139,6 +134,7 @@ public class MusicListActivity extends AppCompatActivity {
         musicAdapter.setOnItemClickListener(new MusicAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                allMusicSdCardList = musicDBHelper.selectMusicTbl();
 
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 Fragment fragmentPlayMusic = new FragmentPlayer();

@@ -35,7 +35,6 @@ public class MusicDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         try {
-
             sqLiteDatabase.execSQL(
                     "CREATE TABLE IF NOT EXISTS musicTBL(" +
                             "id VARCHAR(15) PRIMARY KEY," +
@@ -200,6 +199,7 @@ public class MusicDBHelper extends SQLiteOpenHelper {
 
         if(dbList.isEmpty()){
             return sdCardList;
+//            return dbList;
         }
 
         // DB에 sdCard 정보가 있다면

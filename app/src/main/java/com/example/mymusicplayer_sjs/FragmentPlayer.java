@@ -47,11 +47,14 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        // MusicListActivity에서 가져와야하는 값 모두 가져오기
         musicListActivity = (MusicListActivity) getActivity();
         musicDBHelper = musicListActivity.getMusicDBHelper();
         musicList = musicListActivity.getMusicList();
         likeMusicList = musicListActivity.getLikeMusicList();
         musicAdapter = musicListActivity.getMusicAdapter();
+        index = musicListActivity.getPosition();
     }
 
     @Override
@@ -76,10 +79,9 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         // 뷰 아이디 가져오기
         findViewByIdFunc(view);
 
-        index = musicListActivity.getPosition();
+        setPlayerData(index);
 
-
-        setPlayerData(index,true);
+        // 시크바 스레드
         seekBarChangeMethod();
 
         return view;
@@ -107,7 +109,7 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
                     index = musicListActivity.getMusicList().size();
                 }
                 index--;
-                setPlayerData(index,true);
+                setPlayerData(index);
                 break;
             case R.id.ibForward:
                 mediaPlayer.stop();
@@ -116,20 +118,20 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
                     index = -1;
                 }
                 index++;
-                setPlayerData(index,true);
+                setPlayerData(index);
                 break;
             case R.id.ibLike:
-                if (ibLike.isActivated()){
-                    ibLike.setActivated(false);
+                if (musicData.getLiked() == 1){
+                    ibLike.setActivated(true);
                     ibLike.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                     musicData.setLiked(0);
                     musicDBHelper.updateMusicDataToDB(musicData);
                     musicAdapter.notifyDataSetChanged();;
                     Toast.makeText(musicListActivity, "좋아요 취소!!", Toast.LENGTH_SHORT).show();
                 }else{
-                    ibLike.setActivated(true);
-                    musicData.setLiked(1);
+                    ibLike.setActivated(false);
                     ibLike.setImageResource(R.drawable.ic_baseline_favorite_24);
+                    musicData.setLiked(1);
                     musicDBHelper.updateMusicDataToDB(musicData);
                     musicAdapter.notifyDataSetChanged();
                     Toast.makeText(musicListActivity, "좋아요 !!", Toast.LENGTH_SHORT).show();
@@ -142,33 +144,26 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
 
     // 플레이어 화면 처리
 //    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void setPlayerData(int pos,boolean flag){
+    public void setPlayerData(int pos){
         index = pos;
 
         mediaPlayer.stop();
         mediaPlayer.reset();
 
-//        MusicAdapter musicAdapter = new MusicAdapter(musicListActivity);
+//        musicList = musicDBHelper.compareArrayList();
 
-        // 플래그에 따라 musicData에 좋아요한 뮤직 리스트와 아닌 리스트를 가져온다.
-        if (flag){
-//            musicData = musicListActivity.getAllMusicSdCardList().get(pos);
-//            musicData = musicListActivity.getMusicList().get(pos);
-            musicData = musicList.get(pos);
-        }else{
-            // 좋아요한 뮤직 리스트 가져오기
-//            musicData = musicListActivity.getAllMusicSdCardList().get(pos);
-        }
+        musicData = musicList.get(pos);
 
         tvMusicName.setText(musicData.getTitle());
         tvSingerName.setText(musicData.getArtists());
         tvDuration.setText(sdf.format(Integer.parseInt(musicData.getDuration())));
 
+        Toast.makeText(musicListActivity, "musicData.getLiked() = " + musicData.getLiked(), Toast.LENGTH_SHORT).show();
         if (musicData.getLiked() == 1){
-            ibLike.setActivated(true);
+//            ibLike.setActivated(true);
             ibLike.setImageResource(R.drawable.ic_baseline_favorite_24);
         }else{
-            ibLike.setActivated(false);
+//            ibLike.setActivated(false);
             ibLike.setImageResource(R.drawable.ic_baseline_favorite_border_24);
         }
 
@@ -262,8 +257,5 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
         ibLike.setOnClickListener(this);
     }   // end of findViewByIdFunc
 
-//    public interface OnFragmentInteractionListener{
-//        void onFragmentInteraction(MediaPlayer mediaPlayer);
-//    }
 }
 
