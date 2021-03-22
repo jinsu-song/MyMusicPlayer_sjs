@@ -66,7 +66,4 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE},MODE_PRIVATE);
     }   // end of requestPermissionsFunc
 
-
-
-
 }

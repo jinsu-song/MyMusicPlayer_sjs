@@ -21,8 +21,6 @@ public class MusicListActivity extends AppCompatActivity {
     private MusicAdapter musicAdapter;
 
     private int position;
-    private MediaPlayer mediaPlayer;
-
     private int requestCode;
 
     MusicDBHelper musicDBHelper = MusicDBHelper.getInstance(this);
@@ -33,9 +31,7 @@ public class MusicListActivity extends AppCompatActivity {
         return this.musicAdapter;
     }
 
-    public ArrayList<MusicData> getAllMusicSdCardList() {
-        return allMusicSdCardList;
-    }
+
     public MusicAdapter getLikeMusicAdapter(){
         return this.likeMusicAdapter;
     }
@@ -45,7 +41,9 @@ public class MusicListActivity extends AppCompatActivity {
     }
     public void setPosition(int position){this.position = position;}
 
-
+    public MusicDBHelper getMusicDBHelper(){
+        return this.musicDBHelper;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,13 +123,6 @@ public class MusicListActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        boolean returnValue = musicDBHelper.updateMusicDataToDB(allMusicSdCardList);
-
-        if (returnValue){
-            Toast.makeText(this, "업뎃 성공", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "업뎃 실패", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void likeRecyclerViewListUpdate(ArrayList<MusicData> arrayList){

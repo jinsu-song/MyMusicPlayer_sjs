@@ -54,7 +54,7 @@ public class MusicDBHelper extends SQLiteOpenHelper {
     // 테이블 삭제
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("drop table if exists musicTBL");
+//        sqLiteDatabase.execSQL("drop table if exists musicTBL");
         onCreate(sqLiteDatabase);
     }   // end of onUpgrade
 
@@ -89,21 +89,20 @@ public class MusicDBHelper extends SQLiteOpenHelper {
     }   // end of selectMusicTbl
 
     // 좋아요 업데이트 시키기
-    public boolean updateMusicDataToDB(ArrayList<MusicData> arrayList){
+    public boolean updateMusicDataToDB(MusicData musicData){
         boolean returnValue = false;
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
         try{
-            for (MusicData data : arrayList) {
-                String query = "UPDATE musicTBL SET liked = " + data.getLiked() + " WHERE id = '" + data.getId() + "';";
+//            for (MusicData data : arrayList) {
+                String query = "UPDATE musicTBL SET liked = " + musicData.getLiked() + " WHERE id = '" + musicData.getId() + "';";
                 sqLiteDatabase.execSQL(query);
-            }
+//            }
 
             returnValue = true;
         } catch(SQLException sqle){
             return false;
         }
-        sqLiteDatabase.close();
         return returnValue;
 
     }   // end of updateMusicDataToDB
@@ -146,7 +145,7 @@ public class MusicDBHelper extends SQLiteOpenHelper {
                             + "'" + data.getTitle() + "',"
                             + "'" + data.getAlbumArt() + "',"
                             + "'" + data.getDuration() + "',"
-                            + 0 + ");";
+                            + data.getLiked() + ");";
                     sqLiteDatabase.execSQL(query);
                 }
             }   // end of for-each
@@ -160,7 +159,6 @@ public class MusicDBHelper extends SQLiteOpenHelper {
             Log.d("MusicDBHelper", "insert 에서 에러");
             e.printStackTrace();
         }finally{
-            sqLiteDatabase.close();
         }
         return returnValue;
     }   // end of insertMusicDataToDB

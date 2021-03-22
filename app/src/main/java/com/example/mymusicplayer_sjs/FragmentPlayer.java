@@ -39,27 +39,16 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
     private ArrayList<MusicData> allMusicSdCardList = null;
     private ArrayList<MusicData> likeMusicList = null;
     private ArrayList<MusicData> musicList;
+    private MusicDBHelper musicDBHelper;
     private MusicAdapter musicAdapter;
     private SimpleDateFormat sdf = new SimpleDateFormat("mm:ss"); // 1. 시간을 가져오기 방식
-
-//    private MusicAdapter allMusicAdapter;
-
-    private boolean isBackPressed;
-
-//    private OnFragmentInteractionListener mListener;
     private Thread thread;
-
-    public MediaPlayer getMediaPlayer(){
-        return mediaPlayer;
-    }
-
-
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         musicListActivity = (MusicListActivity) getActivity();
-
+        musicDBHelper = musicListActivity.getMusicDBHelper();
         musicList = musicListActivity.getMusicList();
         likeMusicList = musicListActivity.getLikeMusicList();
         musicAdapter = musicListActivity.getMusicAdapter();
@@ -68,9 +57,6 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
     @Override
     public void onDetach() {
         super.onDetach();
-
-//        mListener.onFragmentInteraction(mediaPlayer);
-
 
         // 재생중인 음악과 스레드 멈추기기
        if (mediaPlayer.isPlaying()) {
@@ -108,15 +94,9 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
                     mediaPlayer.pause();
                     ibPauseAndPlay.setImageResource(R.drawable.button_play);
                 }else{
-//                    mediaPlayer.prepare();
                     mediaPlayer.start();
                     ibPauseAndPlay.setImageResource(R.drawable.button_pause);
-//                    try{
-////                        thread.interrupt();
-//                        thread.sleep(100);
-//                    }catch (InterruptedException ite){
-//
-//                    }
+
                     setSeekBarThread();
                 }
                 break;
@@ -143,14 +123,14 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
                     ibLike.setActivated(false);
                     ibLike.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                     musicData.setLiked(0);
-                    likeMusicList.remove(musicData);
+                    musicDBHelper.updateMusicDataToDB(musicData);
                     musicAdapter.notifyDataSetChanged();;
                     Toast.makeText(musicListActivity, "좋아요 취소!!", Toast.LENGTH_SHORT).show();
                 }else{
                     ibLike.setActivated(true);
                     musicData.setLiked(1);
                     ibLike.setImageResource(R.drawable.ic_baseline_favorite_24);
-                    likeMusicList.add(musicData);
+                    musicDBHelper.updateMusicDataToDB(musicData);
                     musicAdapter.notifyDataSetChanged();
                     Toast.makeText(musicListActivity, "좋아요 !!", Toast.LENGTH_SHORT).show();
                 }
@@ -286,3 +266,4 @@ public class FragmentPlayer extends Fragment implements View.OnClickListener{
 //        void onFragmentInteraction(MediaPlayer mediaPlayer);
 //    }
 }
+
